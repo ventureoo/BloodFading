@@ -20,17 +20,17 @@ package ru.ventureo.bloodfading;
 
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
-import ru.ventureo.bloodfading.impl.FadingInterface;
+import ru.ventureo.bloodfading.impl.PacketSender;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class BloodFadingRunnable implements Runnable {
 
-    private final FadingInterface packetSender;
+    private final PacketSender sender;
 
-    public BloodFadingRunnable(FadingInterface sender) {
-        this.packetSender = sender;
+    public BloodFadingRunnable(PacketSender sender) {
+        this.sender = sender;
     }
 
     protected static Map<Player, Integer> players = new HashMap<>();
@@ -44,7 +44,7 @@ public class BloodFadingRunnable implements Runnable {
             int borderSize = (int) border.getSize() / 2;
             int minDistance = borderSize - distanceCenter;
             Integer distance = entry.getValue();
-            packetSender.fading(player, distance);
+            sender.fading(player, distance);
             distance = (int) (distance * 0.95);
             entry.setValue(distance);
             if (minDistance >= distance) {

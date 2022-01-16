@@ -1,6 +1,6 @@
 name: BloodFading
-version: 0.1
+version: 0.2
 author: ventureo
 main: ru.ventureo.bloodfading.BloodFadingPlugin
-api-version: 1.16
+api-version: 1.13
 depend: [ProtocolLib]
