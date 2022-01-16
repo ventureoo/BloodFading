@@ -14,4 +14,4 @@ The plugin sends each damaged player a fake packet (via ProtocolLib) that he exc
 
 ## Requirements
 
-Can run on versions of JDK 8+ and requires the latest ProtocolLib to support the latest versions of Minecraft.
+Can run on versions of Java 8+ and requires the latest ProtocolLib to support the latest versions of Minecraft.
