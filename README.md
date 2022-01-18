@@ -12,6 +12,27 @@ The plugin sends each damaged player a fake packet (via ProtocolLib) that he exc
 
 **ATTENTION: The effect on the edges of the screen does not appear on fast graphics settings. This is a limitation of the client of Minecraft, which can not be bypassed.**
 
+## Configuration
+
+Starting with version 0.4 you can configure the behavior of the plugin:
+
+```
+# The fading time for the player.
+# A value of 3 roughly corresponds to one second of real time.
+#
+# Default value: 6 (~2 seconds)
+interval: 6
+# The coefficient of speed with which the animation (fake distance) decreases at the edges.
+# The smaller the coefficient, the faster the animation (fading).
+# Accepts a value in decimal fraction from 0.1 to 0.9 inclusive.
+# Values greater than or equal to one are not accepted.
+#
+# Default value: 0.95
+coefficient: 0.95
+```
+
+If you change the `interval`, I recommend changing it along with the `coefficient` so that the fading is smooth for the player.
+
 ## Requirements
 
 Can work on versions of Java 8+ and requires the latest ProtocolLib to support the latest versions of Minecraft.
