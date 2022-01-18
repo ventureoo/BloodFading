@@ -14,7 +14,7 @@ The plugin sends each damaged player a fake packet (via ProtocolLib) that he exc
 
 ## Configuration
 
-Starting with version 0.4 you can configure the behavior of the plugin:
+Starting with version 0.4 you can configure the behavior of the plugin. An example of the default configuration:
 
 ```
 # The fading time for the player.
@@ -31,7 +31,7 @@ interval: 6
 coefficient: 0.95
 ```
 
-If you change the `interval`, I recommend changing it along with the `coefficient` so that the fading is smooth for the player.
+If you change the `interval`, I recommend changing it along with the `coefficent` to make the fading look smooth to the player.
 
 ## Requirements
 
