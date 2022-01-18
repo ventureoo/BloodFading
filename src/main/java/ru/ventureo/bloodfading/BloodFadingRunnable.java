@@ -28,9 +28,11 @@ import java.util.Map;
 public class BloodFadingRunnable implements Runnable {
 
     private final PacketSender sender;
+    private double coefficient;
 
-    public BloodFadingRunnable(PacketSender sender) {
+    public BloodFadingRunnable(PacketSender sender, double coefficient) {
         this.sender = sender;
+        this.coefficient = coefficient;
     }
 
     protected static Map<Player, Integer> players = new HashMap<>();
@@ -45,11 +47,11 @@ public class BloodFadingRunnable implements Runnable {
             int minDistance = borderSize - distanceCenter;
             Integer distance = entry.getValue();
             sender.fading(player, distance);
-            distance = (int) (distance * 0.95);
+            distance = (int) (distance * coefficient);
             entry.setValue(distance);
             if (minDistance >= distance) {
-                sender.fading(player, border.getWarningDistance());
                 players.remove(entry.getKey());
+                sender.fading(player, border.getWarningDistance());
             }
         }
     }

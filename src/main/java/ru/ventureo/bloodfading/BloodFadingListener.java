@@ -26,6 +26,12 @@ import org.bukkit.event.entity.EntityDamageEvent;
 
 public class BloodFadingListener implements Listener {
 
+    private int interval;
+
+    public BloodFadingListener(int interval) {
+        this.interval = interval;
+    }
+
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player) {
@@ -34,7 +40,7 @@ public class BloodFadingListener implements Listener {
                 WorldBorder border = player.getWorld().getWorldBorder();
                 int offset = (int) player.getLocation().distance(border.getCenter());
                 int distance = (int) (border.getSize() / 2 - offset);
-                BloodFadingRunnable.players.put(player, distance * 6);
+                BloodFadingRunnable.players.put(player, distance * interval);
             }
         }
     }

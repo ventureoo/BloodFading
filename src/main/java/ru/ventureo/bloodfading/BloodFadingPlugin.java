@@ -21,10 +21,13 @@ package ru.ventureo.bloodfading;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import org.bukkit.Server;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.ventureo.bloodfading.impl.PacketSender;
 import ru.ventureo.bloodfading.impl.v1_16.ProtocolLibImpl;
 import ru.ventureo.bloodfading.impl.v1_8.LegacyProtocolLibImpl;
+
+import java.util.logging.Logger;
 
 public class BloodFadingPlugin extends JavaPlugin {
 
@@ -35,22 +38,35 @@ public class BloodFadingPlugin extends JavaPlugin {
         PacketSender packetSender = null;
 
         Server server = this.getServer();
-
-        String version = server.getClass().getPackage().getName().replace(".", ",").split(",")[3];
-        double subversion = Double.parseDouble(version.replace("v1_", "").replaceAll("_R", "."));
+        Logger logger = this.getLogger();
 
         if (protocolManager != null) {
+            String version = server.getClass().getPackage().getName().replace(".", ",").split(",")[3];
+            double subversion = Double.parseDouble(version.replace("v1_", "").replaceAll("_R", "."));
+
             if (subversion > 16.0) {
                 packetSender = new ProtocolLibImpl(protocolManager);
             } else {
                 packetSender = new LegacyProtocolLibImpl(protocolManager);
             }
         } else {
-            this.getLogger().warning("ProtocolLib is unavailable, stopping...");
-            onDisable();
+            logger.warning("ProtocolLib is unavailable, stopping...");
+            this.setEnabled(false);
         }
 
-        server.getPluginManager().registerEvents(new BloodFadingListener(), this);
-        server.getScheduler().runTaskTimer(this, new BloodFadingRunnable(packetSender), 0L, 1L);
+        FileConfiguration config = this.getConfig();
+        config.options().copyDefaults(true);
+        this.saveConfig();
+
+        double coefficient = config.getDouble("coefficient");
+        int interval = config.getInt("interval");
+
+        if (coefficient >= 1) {
+            coefficient = 0.95;
+            logger.warning("You selected the wrong coefficient value, which is greater than or equal to one. The coefficient is set to the default value of 0.95.");
+        }
+
+        server.getPluginManager().registerEvents(new BloodFadingListener(interval), this);
+        server.getScheduler().runTaskTimer(this, new BloodFadingRunnable(packetSender, coefficient), 0L, 1L);
     }
 }
