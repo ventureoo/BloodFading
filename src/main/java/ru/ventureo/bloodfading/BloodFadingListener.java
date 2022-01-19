@@ -24,12 +24,16 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 
+import java.util.Map;
+
 public class BloodFadingListener implements Listener {
 
+    private Map<Player, Integer> players;
     private int interval;
     private FadingType mode;
 
-    public BloodFadingListener(int interval, FadingType mode) {
+    public BloodFadingListener(Map<Player, Integer> players, int interval, FadingType mode) {
+        this.players = players;
         this.interval = interval;
         this.mode = mode;
     }
@@ -52,7 +56,7 @@ public class BloodFadingListener implements Listener {
                 fakeDistance = fakeDistance * health;
             }
 
-            BloodFadingRunnable.players.put(player, Math.abs(fakeDistance));
+            players.put(player, Math.abs(fakeDistance));
         }
     }
 }

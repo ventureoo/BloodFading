@@ -22,20 +22,19 @@ import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
 import ru.ventureo.bloodfading.impl.PacketSender;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class BloodFadingRunnable implements Runnable {
 
+    private Map<Player, Integer> players;
     private final PacketSender sender;
     private double coefficient;
 
-    public BloodFadingRunnable(PacketSender sender, double coefficient) {
+    public BloodFadingRunnable(Map<Player, Integer> players, PacketSender sender, double coefficient) {
+        this.players = players;
         this.sender = sender;
         this.coefficient = coefficient;
     }
-
-    protected static Map<Player, Integer> players = new HashMap<>();
 
     @Override
     public void run() {

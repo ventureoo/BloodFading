@@ -22,16 +22,22 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import org.bukkit.Server;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.ventureo.bloodfading.impl.PacketSender;
 import ru.ventureo.bloodfading.impl.v1_16.ProtocolLibImpl;
 import ru.ventureo.bloodfading.impl.v1_8.LegacyProtocolLibImpl;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class BloodFadingPlugin extends JavaPlugin {
 
     private double coefficient;
     private int interval;
     private FadingType mode;
+
+    protected Map<Player, Integer> players = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -57,8 +63,8 @@ public class BloodFadingPlugin extends JavaPlugin {
 
         loadConfig();
 
-        server.getPluginManager().registerEvents(new BloodFadingListener(interval, this.mode), this);
-        server.getScheduler().runTaskTimer(this, new BloodFadingRunnable(packetSender, this.coefficient), 0L, 1L);
+        server.getPluginManager().registerEvents(new BloodFadingListener(players, interval, this.mode), this);
+        server.getScheduler().runTaskTimer(this, new BloodFadingRunnable(players, packetSender, coefficient), 0L, 1L);
     }
 
     public void loadConfig() {
