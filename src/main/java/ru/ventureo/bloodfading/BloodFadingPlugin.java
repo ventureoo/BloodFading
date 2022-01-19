@@ -27,9 +27,11 @@ import ru.ventureo.bloodfading.impl.PacketSender;
 import ru.ventureo.bloodfading.impl.v1_16.ProtocolLibImpl;
 import ru.ventureo.bloodfading.impl.v1_8.LegacyProtocolLibImpl;
 
-import java.util.logging.Logger;
-
 public class BloodFadingPlugin extends JavaPlugin {
+
+    private double coefficient;
+    private int interval;
+    private FadingType mode;
 
     @Override
     public void onEnable() {
@@ -38,7 +40,6 @@ public class BloodFadingPlugin extends JavaPlugin {
         PacketSender packetSender = null;
 
         Server server = this.getServer();
-        Logger logger = this.getLogger();
 
         if (protocolManager != null) {
             String version = server.getClass().getPackage().getName().replace(".", ",").split(",")[3];
@@ -50,23 +51,40 @@ public class BloodFadingPlugin extends JavaPlugin {
                 packetSender = new LegacyProtocolLibImpl(protocolManager);
             }
         } else {
-            logger.warning("ProtocolLib is unavailable, stopping...");
+            getLogger().warning("ProtocolLib is unavailable, stopping...");
             this.setEnabled(false);
         }
 
+        loadConfig();
+
+        server.getPluginManager().registerEvents(new BloodFadingListener(interval, this.mode), this);
+        server.getScheduler().runTaskTimer(this, new BloodFadingRunnable(packetSender, this.coefficient), 0L, 1L);
+    }
+
+    public void loadConfig() {
         FileConfiguration config = this.getConfig();
         config.options().copyDefaults(true);
         this.saveConfig();
 
-        double coefficient = config.getDouble("coefficient");
-        int interval = config.getInt("interval");
+        this.coefficient = config.getDouble("coefficient", 0.95);
+        this.interval = config.getInt("interval", 6);
 
         if (coefficient >= 1) {
             coefficient = 0.95;
-            logger.warning("You selected the wrong coefficient value, which is greater than or equal to one. The coefficient is set to the default value of 0.95.");
+            getLogger().warning("You selected the wrong coefficient value, which is greater than or equal to one. +" +
+                    "The coefficient is set to the default value of 0.95.");
         }
 
-        server.getPluginManager().registerEvents(new BloodFadingListener(interval), this);
-        server.getScheduler().runTaskTimer(this, new BloodFadingRunnable(packetSender, coefficient), 0L, 1L);
+        String mode = config.getString("mode", "default");
+        switch (mode) {
+            case "health":
+                this.mode = FadingType.HEALTH;
+                break;
+            case "damage":
+                this.mode = FadingType.DAMAGE;
+                break;
+            default:
+                this.mode = FadingType.DEFAULT;
+        }
     }
 }

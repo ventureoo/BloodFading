@@ -7,7 +7,7 @@
     <groupId>ru.ventureo</groupId>
     <artifactId>BloodFading</artifactId>
     <packaging>pom</packaging>
-    <version>0.4</version>
+    <version>0.5</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

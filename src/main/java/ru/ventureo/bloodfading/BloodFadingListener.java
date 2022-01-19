@@ -27,21 +27,32 @@ import org.bukkit.event.entity.EntityDamageEvent;
 public class BloodFadingListener implements Listener {
 
     private int interval;
+    private FadingType mode;
 
-    public BloodFadingListener(int interval) {
+    public BloodFadingListener(int interval, FadingType mode) {
         this.interval = interval;
+        this.mode = mode;
     }
 
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
-            if (!player.isDead()) {
-                WorldBorder border = player.getWorld().getWorldBorder();
-                int offset = (int) player.getLocation().distance(border.getCenter());
-                int distance = (int) (border.getSize() / 2 - offset);
-                BloodFadingRunnable.players.put(player, distance * interval);
+            WorldBorder border = player.getWorld().getWorldBorder();
+            int offset = (int) player.getLocation().distance(border.getCenter());
+            int distance = (int) (border.getSize() / 2 - offset);
+            int fakeDistance = distance * interval;
+
+            if (mode == FadingType.DAMAGE) {
+                fakeDistance = (int) (fakeDistance * event.getDamage());
+            } else if (mode == FadingType.HEALTH) {
+                // We use the deprecated API because we want to keep compatibility with older versions
+                int health = (int) (player.getMaxHealth() - player.getHealth());
+                health = (health > 0) ? health : 1;
+                fakeDistance = fakeDistance * health;
             }
+
+            BloodFadingRunnable.players.put(player, Math.abs(fakeDistance));
         }
     }
 }

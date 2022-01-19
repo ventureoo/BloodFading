@@ -49,7 +49,7 @@ public class BloodFadingRunnable implements Runnable {
             sender.fading(player, distance);
             distance = (int) (distance * coefficient);
             entry.setValue(distance);
-            if (minDistance >= distance) {
+            if (minDistance >= distance || player.isDead()) {
                 players.remove(entry.getKey());
                 sender.fading(player, border.getWarningDistance());
             }
