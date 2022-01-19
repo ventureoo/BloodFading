@@ -17,11 +17,20 @@ The plugin sends each damaged player a fake packet (via ProtocolLib) that he exc
 Starting with version 0.4 you can configure the behavior of the plugin. An example of the default configuration:
 
 ```
+# Selects the fading mode. Accepts the following values:
+#  default (Default) - The fading occurs equal to the amount of time set by the variable interval.
+#  health - Fading occurs depending on the interval and the value of the remaining health of the player.
+#           The lower the health of the player, the longer and more pronounced the effect.
+#  damage - Fading occurs depending on the interval and the damage received by the player.
+#           The more damage the player received, the longer and more pronounced the effect.
+mode: default
+
 # The fading time for the player.
 # A value of 3 roughly corresponds to one second of real time.
 #
 # Default value: 6 (~2 seconds)
 interval: 6
+
 # The coefficient of speed with which the animation (fake distance) decreases at the edges.
 # The smaller the coefficient, the faster the animation (fading).
 # Accepts a value in decimal fraction from 0.1 to 0.9 inclusive.
@@ -35,4 +44,5 @@ If you change the `interval`, I recommend changing it along with the `coefficent
 
 ## Requirements
 
-Can work on versions of Java 8+ and requires the latest ProtocolLib to support the latest versions of Minecraft.
+- Java 8+
+- Requires the latest ProtocolLib to support the latest versions of Minecraft.
