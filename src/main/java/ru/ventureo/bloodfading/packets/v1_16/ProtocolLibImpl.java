@@ -16,30 +16,27 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with BloodFading. If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.ventureo.bloodfading.impl.v1_8;
+package ru.ventureo.bloodfading.packets.v1_16;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import org.bukkit.entity.Player;
-import ru.ventureo.bloodfading.impl.PacketSender;
+import ru.ventureo.bloodfading.packets.PacketSender;
 
 import java.lang.reflect.InvocationTargetException;
 
-import static com.comphenix.protocol.wrappers.EnumWrappers.WorldBorderAction.SET_WARNING_BLOCKS;
-
-public class LegacyProtocolLibImpl implements PacketSender {
+public class ProtocolLibImpl implements PacketSender {
     private final ProtocolManager protocolManager;
 
-    public LegacyProtocolLibImpl(ProtocolManager protocolManager) {
+    public ProtocolLibImpl(ProtocolManager protocolManager) {
         this.protocolManager = protocolManager;
     }
 
     @Override
     public void fading(Player player, int distance) {
-        PacketContainer fakeDistance = new PacketContainer(PacketType.Play.Server.WORLD_BORDER);
-        fakeDistance.getWorldBorderActions().write(0, SET_WARNING_BLOCKS);
-        fakeDistance.getIntegers().write(2, distance);
+        PacketContainer fakeDistance = new PacketContainer(PacketType.Play.Server.SET_BORDER_WARNING_DISTANCE);
+        fakeDistance.getIntegers().write(0, distance);
         try {
             protocolManager.sendServerPacket(player, fakeDistance);
         } catch (InvocationTargetException e) {

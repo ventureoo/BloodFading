@@ -20,34 +20,34 @@ package ru.ventureo.bloodfading;
 
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
-import ru.ventureo.bloodfading.impl.PacketSender;
+import ru.ventureo.bloodfading.config.PluginConfiguration;
+import ru.ventureo.bloodfading.packets.PacketSender;
 
 import java.util.Map;
 
 public class BloodFadingRunnable implements Runnable {
 
-    private Map<Player, Integer> players;
+    private final Map<Player, Integer> players;
     private final PacketSender sender;
-    private double coefficient;
+    private final PluginConfiguration config;
 
-    public BloodFadingRunnable(Map<Player, Integer> players, PacketSender sender, double coefficient) {
+    public BloodFadingRunnable(Map<Player, Integer> players, PacketSender sender, PluginConfiguration config) {
         this.players = players;
         this.sender = sender;
-        this.coefficient = coefficient;
+        this.config = config;
     }
 
     @Override
     public void run() {
-        for(Map.Entry<Player, Integer> entry: players.entrySet()) {
+        for (Map.Entry<Player, Integer> entry: players.entrySet()) {
             Player player = entry.getKey();
             WorldBorder border = player.getWorld().getWorldBorder();
-            int distanceCenter = (int) player.getLocation().distance(border.getCenter());
-            int borderSize = (int) border.getSize() / 2;
-            int minDistance = borderSize - distanceCenter;
+            int minDistance = (int) (border.getSize() / 2 - player.getLocation().distance(border.getCenter()));
             Integer distance = entry.getValue();
             sender.fading(player, distance);
-            distance = (int) (distance * coefficient);
+            distance = (int) (distance * config.getCoefficient());
             entry.setValue(distance);
+
             if (minDistance >= distance || player.isDead()) {
                 players.remove(entry.getKey());
                 sender.fading(player, border.getWarningDistance());

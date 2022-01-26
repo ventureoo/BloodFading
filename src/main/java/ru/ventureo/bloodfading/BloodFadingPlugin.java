@@ -21,21 +21,17 @@ package ru.ventureo.bloodfading;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import org.bukkit.Server;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import ru.ventureo.bloodfading.impl.PacketSender;
-import ru.ventureo.bloodfading.impl.v1_16.ProtocolLibImpl;
-import ru.ventureo.bloodfading.impl.v1_8.LegacyProtocolLibImpl;
+import ru.ventureo.bloodfading.config.PluginConfiguration;
+import ru.ventureo.bloodfading.packets.PacketSender;
+import ru.ventureo.bloodfading.packets.v1_16.ProtocolLibImpl;
+import ru.ventureo.bloodfading.packets.v1_8.LegacyProtocolLibImpl;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class BloodFadingPlugin extends JavaPlugin {
-
-    private double coefficient;
-    private int interval;
-    private FadingType mode;
 
     protected Map<Player, Integer> players = new HashMap<>();
 
@@ -61,36 +57,10 @@ public class BloodFadingPlugin extends JavaPlugin {
             this.setEnabled(false);
         }
 
-        loadConfig();
+        PluginConfiguration configuration = new PluginConfiguration(this, "config.yml");
+        configuration.load();
 
-        server.getPluginManager().registerEvents(new BloodFadingListener(players, interval, this.mode), this);
-        server.getScheduler().runTaskTimer(this, new BloodFadingRunnable(players, packetSender, coefficient), 0L, 1L);
-    }
-
-    public void loadConfig() {
-        FileConfiguration config = this.getConfig();
-        config.options().copyDefaults(true);
-        this.saveConfig();
-
-        this.coefficient = config.getDouble("coefficient", 0.95);
-        this.interval = config.getInt("interval", 6);
-
-        if (coefficient >= 1) {
-            coefficient = 0.95;
-            getLogger().warning("You selected the wrong coefficient value, which is greater than or equal to one. +" +
-                    "The coefficient is set to the default value of 0.95.");
-        }
-
-        String mode = config.getString("mode", "default");
-        switch (mode) {
-            case "health":
-                this.mode = FadingType.HEALTH;
-                break;
-            case "damage":
-                this.mode = FadingType.DAMAGE;
-                break;
-            default:
-                this.mode = FadingType.DEFAULT;
-        }
+        server.getPluginManager().registerEvents(new BloodFadingListener(players, configuration), this);
+        server.getScheduler().runTaskTimer(this, new BloodFadingRunnable(players, packetSender, configuration), 0L, 1L);
     }
 }

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with BloodFading. If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.ventureo.bloodfading.impl;
+package ru.ventureo.bloodfading.packets;
 
 import org.bukkit.entity.Player;
 
