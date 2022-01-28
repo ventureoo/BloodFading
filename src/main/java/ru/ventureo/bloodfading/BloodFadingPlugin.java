@@ -28,12 +28,12 @@ import ru.ventureo.bloodfading.packets.PacketSender;
 import ru.ventureo.bloodfading.packets.v1_16.ProtocolLibImpl;
 import ru.ventureo.bloodfading.packets.v1_8.LegacyProtocolLibImpl;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BloodFadingPlugin extends JavaPlugin {
 
-    protected Map<Player, Integer> players = new HashMap<>();
+    protected Map<Player, Integer> players = new ConcurrentHashMap<>();
 
     @Override
     public void onEnable() {

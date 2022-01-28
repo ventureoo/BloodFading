@@ -23,6 +23,7 @@ import org.bukkit.entity.Player;
 import ru.ventureo.bloodfading.config.PluginConfiguration;
 import ru.ventureo.bloodfading.packets.PacketSender;
 
+import java.util.Iterator;
 import java.util.Map;
 
 public class BloodFadingRunnable implements Runnable {
@@ -49,7 +50,7 @@ public class BloodFadingRunnable implements Runnable {
             entry.setValue(distance);
 
             if (minDistance >= distance || player.isDead()) {
-                players.remove(entry.getKey());
+                players.remove(player);
                 sender.fading(player, border.getWarningDistance());
             }
         }
