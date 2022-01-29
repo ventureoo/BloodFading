@@ -39,6 +39,8 @@ public class BloodFadingListener implements Listener {
 
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
+        if (event.isCancelled()) return;
+
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
             WorldBorder border = player.getWorld().getWorldBorder();
