@@ -29,18 +29,17 @@ import ru.ventureo.bloodfading.packets.v1_16.ProtocolLibImpl;
 import ru.ventureo.bloodfading.packets.v1_8.LegacyProtocolLibImpl;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BloodFadingPlugin extends JavaPlugin {
-
-    protected Map<Player, Integer> players = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> players = new ConcurrentHashMap<>();
+    private PacketSender packetSender;
+    private PluginConfiguration configuration;
 
     @Override
     public void onEnable() {
         ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
-
-        PacketSender packetSender = null;
-
         Server server = this.getServer();
 
         if (protocolManager != null) {
@@ -57,10 +56,22 @@ public class BloodFadingPlugin extends JavaPlugin {
             this.setEnabled(false);
         }
 
-        PluginConfiguration configuration = new PluginConfiguration(this, "config.yml");
-        configuration.load();
+        this.configuration = new PluginConfiguration(this, "config.yml");
+        this.configuration.load();
 
-        server.getPluginManager().registerEvents(new BloodFadingListener(players, configuration), this);
-        server.getScheduler().runTaskTimer(this, new BloodFadingRunnable(players, packetSender, configuration), 0L, 1L);
+        server.getPluginManager().registerEvents(new BloodFadingListener(this), this);
+        server.getScheduler().runTaskTimer(this, new BloodFadingRunnable(this), 0L, 1L);
+    }
+
+    public Map<UUID, Integer> getPlayers() {
+        return players;
+    }
+
+    public PluginConfiguration getConfiguration() {
+        return configuration;
+    }
+
+    public PacketSender getPacketSender() {
+        return packetSender;
     }
 }

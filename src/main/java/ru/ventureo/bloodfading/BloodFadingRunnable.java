@@ -18,6 +18,7 @@
  */
 package ru.ventureo.bloodfading;
 
+import org.bukkit.Bukkit;
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
 import ru.ventureo.bloodfading.config.PluginConfiguration;
@@ -25,33 +26,34 @@ import ru.ventureo.bloodfading.packets.PacketSender;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.UUID;
 
 public class BloodFadingRunnable implements Runnable {
 
-    private final Map<Player, Integer> players;
-    private final PacketSender sender;
-    private final PluginConfiguration config;
+    private final BloodFadingPlugin plugin;
 
-    public BloodFadingRunnable(Map<Player, Integer> players, PacketSender sender, PluginConfiguration config) {
-        this.players = players;
-        this.sender = sender;
-        this.config = config;
+    public BloodFadingRunnable(BloodFadingPlugin plugin) {
+        this.plugin = plugin;
     }
 
     @Override
     public void run() {
-        for (Map.Entry<Player, Integer> entry: players.entrySet()) {
-            Player player = entry.getKey();
-            WorldBorder border = player.getWorld().getWorldBorder();
-            int minDistance = (int) (border.getSize() / 2 - player.getLocation().distance(border.getCenter()));
-            Integer distance = entry.getValue();
-            sender.fading(player, distance);
-            distance = (int) (distance * config.getCoefficient());
-            entry.setValue(distance);
+        for (Map.Entry<UUID, Integer> entry: plugin.getPlayers().entrySet()) {
+            try {
+                Player player = Bukkit.getPlayer(entry.getKey());
+                WorldBorder border = player.getWorld().getWorldBorder();
+                int minDistance = (int) (border.getSize() / 2 - player.getLocation().distance(border.getCenter()));
+                Integer distance = entry.getValue();
+                plugin.getPacketSender().fading(player, distance);
+                distance = (int) (distance * plugin.getConfiguration().getCoefficient());
+                entry.setValue(distance);
 
-            if (minDistance >= distance || player.isDead()) {
-                players.remove(player);
-                sender.fading(player, border.getWarningDistance());
+                if (minDistance >= distance || player.isDead()) {
+                    plugin.getPlayers().remove(player.getUniqueId());
+                    plugin.getPacketSender().fading(player, border.getWarningDistance());
+                }
+            } catch (NullPointerException e) {
+                plugin.getPlayers().remove(entry.getKey());
             }
         }
     }
