@@ -5,7 +5,7 @@
     <groupId>ru.ventureo</groupId>
     <artifactId>BloodFading</artifactId>
     <packaging>jar</packaging>
-    <version>0.5.2</version>
+    <version>0.5.3</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
