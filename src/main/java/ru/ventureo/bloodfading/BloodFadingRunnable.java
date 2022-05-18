@@ -18,15 +18,12 @@
  */
 package ru.ventureo.bloodfading;
 
+import java.util.Map;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
-import ru.ventureo.bloodfading.config.PluginConfiguration;
-import ru.ventureo.bloodfading.packets.PacketSender;
-
-import java.util.Iterator;
-import java.util.Map;
-import java.util.UUID;
 
 public class BloodFadingRunnable implements Runnable {
 
@@ -38,7 +35,7 @@ public class BloodFadingRunnable implements Runnable {
 
     @Override
     public void run() {
-        for (Map.Entry<UUID, Integer> entry: plugin.getPlayers().entrySet()) {
+        for (Map.Entry<UUID, Integer> entry : plugin.getPlayers().entrySet()) {
             try {
                 Player player = Bukkit.getPlayer(entry.getKey());
                 WorldBorder border = player.getWorld().getWorldBorder();

@@ -18,19 +18,20 @@
  */
 package ru.ventureo.bloodfading;
 
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-import org.bukkit.Server;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-import ru.ventureo.bloodfading.config.PluginConfiguration;
-import ru.ventureo.bloodfading.packets.PacketSender;
-import ru.ventureo.bloodfading.packets.v1_16.ProtocolLibImpl;
-import ru.ventureo.bloodfading.packets.v1_8.LegacyProtocolLibImpl;
-
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+
+import org.bukkit.Server;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import ru.ventureo.bloodfading.config.PluginConfiguration;
+import ru.ventureo.bloodfading.packets.PacketSender;
+import ru.ventureo.bloodfading.packets.v1_17.ProtocolLibImpl;
+import ru.ventureo.bloodfading.packets.v1_8.LegacyProtocolLibImpl;
 
 public class BloodFadingPlugin extends JavaPlugin {
     private final Map<UUID, Integer> players = new ConcurrentHashMap<>();
@@ -46,7 +47,7 @@ public class BloodFadingPlugin extends JavaPlugin {
             String version = server.getClass().getPackage().getName().replace(".", ",").split(",")[3];
             double subversion = Double.parseDouble(version.replace("v1_", "").replaceAll("_R", "."));
 
-            if (subversion > 16.0) {
+            if (subversion >= 17.0) {
                 packetSender = new ProtocolLibImpl(protocolManager);
             } else {
                 packetSender = new LegacyProtocolLibImpl(protocolManager);

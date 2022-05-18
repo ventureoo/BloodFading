@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with BloodFading. If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.ventureo.bloodfading.packets.v1_16;
+package ru.ventureo.bloodfading.packets.v1_17;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolManager;
