@@ -19,13 +19,13 @@
 package ru.ventureo.bloodfading;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 
 import org.bukkit.Server;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import ru.ventureo.bloodfading.config.PluginConfiguration;
@@ -34,14 +34,14 @@ import ru.ventureo.bloodfading.packets.v1_17.ProtocolLibImpl;
 import ru.ventureo.bloodfading.packets.v1_8.LegacyProtocolLibImpl;
 
 public class BloodFadingPlugin extends JavaPlugin {
-    private final Map<UUID, Integer> players = new ConcurrentHashMap<>();
+    private final Map<Player, Integer> players = new ConcurrentHashMap<>();
     private PacketSender packetSender;
     private PluginConfiguration configuration;
 
     @Override
     public void onEnable() {
         ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
-        Server server = this.getServer();
+        Server server = getServer();
 
         if (protocolManager != null) {
             String version = server.getClass().getPackage().getName().replace(".", ",").split(",")[3];
@@ -54,17 +54,17 @@ public class BloodFadingPlugin extends JavaPlugin {
             }
         } else {
             getLogger().warning("ProtocolLib is unavailable, stopping...");
-            this.setEnabled(false);
+            setEnabled(false);
         }
 
-        this.configuration = new PluginConfiguration(this, "config.yml");
-        this.configuration.load();
+        configuration = new PluginConfiguration(this, "config.yml");
+        configuration.load();
 
         server.getPluginManager().registerEvents(new BloodFadingListener(this), this);
         server.getScheduler().runTaskTimer(this, new BloodFadingRunnable(this), 0L, 1L);
     }
 
-    public Map<UUID, Integer> getPlayers() {
+    public Map<Player, Integer> getPlayers() {
         return players;
     }
 

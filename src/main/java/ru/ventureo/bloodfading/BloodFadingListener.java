@@ -25,7 +25,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 public class BloodFadingListener implements Listener {
-
     private final BloodFadingPlugin plugin;
 
     public BloodFadingListener(BloodFadingPlugin plugin) {
@@ -50,7 +49,7 @@ public class BloodFadingListener implements Listener {
                 fakeDistance = fakeDistance * health;
             }
 
-            plugin.getPlayers().put(player.getUniqueId(), Math.abs(fakeDistance));
+            plugin.getPlayers().put(player, Math.abs(fakeDistance));
         }
     }
 }

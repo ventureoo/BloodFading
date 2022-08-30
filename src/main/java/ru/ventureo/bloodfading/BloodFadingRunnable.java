@@ -19,14 +19,11 @@
 package ru.ventureo.bloodfading;
 
 import java.util.Map;
-import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
 
 public class BloodFadingRunnable implements Runnable {
-
     private final BloodFadingPlugin plugin;
 
     public BloodFadingRunnable(BloodFadingPlugin plugin) {
@@ -35,22 +32,21 @@ public class BloodFadingRunnable implements Runnable {
 
     @Override
     public void run() {
-        for (Map.Entry<UUID, Integer> entry : plugin.getPlayers().entrySet()) {
-            try {
-                Player player = Bukkit.getPlayer(entry.getKey());
-                WorldBorder border = player.getWorld().getWorldBorder();
-                int minDistance = (int) (border.getSize() / 2 - player.getLocation().distance(border.getCenter()));
-                Integer distance = entry.getValue();
-                plugin.getPacketSender().fading(player, distance);
-                distance = (int) (distance * plugin.getConfiguration().getCoefficient());
-                entry.setValue(distance);
+        for (Map.Entry<Player, Integer> entry : plugin.getPlayers().entrySet()) {
+            Player player = entry.getKey();
+            WorldBorder border = player.getWorld().getWorldBorder();
+            int minDistance = (int) (border.getSize() / 2 - player.getLocation().distance(border.getCenter()));
+            Integer distance = entry.getValue();
+            plugin.getPacketSender().fading(player, distance);
+            distance = (int) (distance * plugin.getConfiguration().getCoefficient());
+            entry.setValue(distance);
 
-                if (minDistance >= distance || player.isDead()) {
-                    plugin.getPlayers().remove(player.getUniqueId());
-                    plugin.getPacketSender().fading(player, border.getWarningDistance());
-                }
-            } catch (NullPointerException e) {
-                plugin.getPlayers().remove(entry.getKey());
+            // Fixes a potential memory leak
+            if (!player.isOnline()) plugin.getPlayers().remove(player);
+
+            if (minDistance >= distance || player.isDead()) {
+                plugin.getPlayers().remove(player);
+                plugin.getPacketSender().fading(player, border.getWarningDistance());
             }
         }
     }
