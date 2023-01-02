@@ -67,17 +67,16 @@ public class PluginConfiguration extends AbstractConfig {
 
     public String messageOnEnable() {
         return getColoredString("messages.onEnable",
-                "&aYou turned on the first-person blood effect");
+                "&aYou have enabled the first-person blood effect");
     }
 
     public String messageOnDisable() {
         return getColoredString("messages.onDisable",
-                "&cYou turned off the first-person blood effect");
+                "&cYou have disabled the first-person blood effect");
     }
 
     public String messageNoPermission() {
         return getColoredString("messages.noPermission",
                 "&cYou don't have permission for this");
     }
-
 }

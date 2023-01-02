@@ -43,7 +43,7 @@ public class PlayersData extends AbstractConfig {
     @Override
     public void save() {
         getConfig().set(KEY, toggled);
-        save();
+        super.save();
     }
 
     @Override

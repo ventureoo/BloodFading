@@ -22,6 +22,6 @@ coefficient: 0.95
 
 # Messages to be output by the bloodfading command
 messages:
-  onEnable: "&2You turned on the first-person blood effect"
-  onDisable: "&4You turned off the first-person blood effect"
+  onEnable: "&2You have enabled the first-person blood effect."
+  onDisable: "&4You have disabled the first-person blood effect."
   noPermission: "&4You don't have permission for this"
