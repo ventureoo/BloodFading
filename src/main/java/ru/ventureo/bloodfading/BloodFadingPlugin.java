@@ -21,47 +21,48 @@ package ru.ventureo.bloodfading;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-
-import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+
+import ru.ventureo.bloodfading.commands.BloodFadingToggleCommand;
+import ru.ventureo.bloodfading.config.PlayersData;
 import ru.ventureo.bloodfading.config.PluginConfiguration;
+import ru.ventureo.bloodfading.listeners.BloodFadingListener;
+import ru.ventureo.bloodfading.scheduler.BloodFadingRunnable;
 import ru.ventureo.bloodfading.packets.PacketSender;
 import ru.ventureo.bloodfading.packets.v1_17.ProtocolLibImpl;
 import ru.ventureo.bloodfading.packets.v1_8.LegacyProtocolLibImpl;
 
 public class BloodFadingPlugin extends JavaPlugin {
     private final Map<Player, Integer> players = new ConcurrentHashMap<>();
+    private final PluginConfiguration configuration = new PluginConfiguration(this);
+    private final PlayersData data = new PlayersData(this);
     private PacketSender packetSender;
-    private PluginConfiguration configuration;
 
     @Override
     public void onEnable() {
         ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
-        Server server = getServer();
 
-        if (protocolManager != null) {
-            String version = server.getClass().getPackage().getName().replace(".", ",").split(",")[3];
-            double subversion = Double.parseDouble(version.replace("v1_", "").replaceAll("_R", "."));
-
-            if (subversion >= 17.0) {
-                packetSender = new ProtocolLibImpl(protocolManager);
-            } else {
-                packetSender = new LegacyProtocolLibImpl(protocolManager);
-            }
-        } else {
+        if (protocolManager == null) {
             getLogger().warning("ProtocolLib is unavailable, stopping...");
             setEnabled(false);
         }
 
-        configuration = new PluginConfiguration(this, "config.yml");
+        setPackerSender(protocolManager);
         configuration.load();
+        data.load();
 
-        server.getPluginManager().registerEvents(new BloodFadingListener(this), this);
-        server.getScheduler().runTaskTimer(this, new BloodFadingRunnable(this), 0L, 1L);
+        getCommand("bloodfading").setExecutor(new BloodFadingToggleCommand(this));
+        getServer().getPluginManager().registerEvents(new BloodFadingListener(this), this);
+        getServer().getScheduler().runTaskTimer(this, new BloodFadingRunnable(this), 0L, 1L);
+    }
+
+    @Override
+    public void onDisable() {
+        data.save();
     }
 
     public Map<Player, Integer> getPlayers() {
@@ -70,6 +71,23 @@ public class BloodFadingPlugin extends JavaPlugin {
 
     public PluginConfiguration getConfiguration() {
         return configuration;
+    }
+
+    public PlayersData getPlayersData() {
+        return data;
+    }
+
+    private void setPackerSender(ProtocolManager manager) {
+        String version = getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
+        double subversion = Double.parseDouble(version.replace("v1_", "").replaceAll("_R", "."));
+
+        if (subversion >= 17.0) {
+            packetSender = new ProtocolLibImpl(manager);
+        } else if (subversion >= 8.0) {
+            packetSender = new LegacyProtocolLibImpl(manager);
+        } else {
+            throw new UnsupportedOperationException("Your Minecraft version is unsupported by this plugin");
+        }
     }
 
     public PacketSender getPacketSender() {

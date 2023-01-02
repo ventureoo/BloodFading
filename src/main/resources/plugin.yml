@@ -5,3 +5,8 @@ main: ru.ventureo.bloodfading.BloodFadingPlugin
 website: https://github.com/ventureoo/BloodFading
 api-version: 1.13
 depend: [ProtocolLib]
+
+commands:
+  bloodfading:
+    description: "Command to turn on/off the blood effect on the edges of the screen"
+    aliases: bf

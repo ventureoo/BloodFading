@@ -16,12 +16,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with BloodFading. If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.ventureo.bloodfading;
+package ru.ventureo.bloodfading.scheduler;
 
 import java.util.Map;
 
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
+
+import ru.ventureo.bloodfading.BloodFadingPlugin;
 
 public class BloodFadingRunnable implements Runnable {
     private final BloodFadingPlugin plugin;
@@ -34,6 +36,11 @@ public class BloodFadingRunnable implements Runnable {
     public void run() {
         for (Map.Entry<Player, Integer> entry : plugin.getPlayers().entrySet()) {
             Player player = entry.getKey();
+
+            // Fixes a potential memory leak
+            if (!player.isOnline())
+                plugin.getPlayers().remove(player);
+
             WorldBorder border = player.getWorld().getWorldBorder();
             int minDistance = (int) (border.getSize() / 2 - player.getLocation().distance(border.getCenter()));
             Integer distance = entry.getValue();
@@ -41,10 +48,7 @@ public class BloodFadingRunnable implements Runnable {
             distance = (int) (distance * plugin.getConfiguration().getCoefficient());
             entry.setValue(distance);
 
-            // Fixes a potential memory leak
-            if (!player.isOnline()) plugin.getPlayers().remove(player);
-
-            if (minDistance >= distance || player.isDead()) {
+            if (minDistance >= distance || player.isDead() || plugin.getPlayersData().isDisabled(player)) {
                 plugin.getPlayers().remove(player);
                 plugin.getPacketSender().fading(player, border.getWarningDistance());
             }

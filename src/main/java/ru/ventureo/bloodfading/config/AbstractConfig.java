@@ -18,33 +18,33 @@
  */
 package ru.ventureo.bloodfading.config;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
-import java.io.File;
-import java.io.IOException;
-
-public class ConfigurationManager {
+public class AbstractConfig {
     private final FileConfiguration config;
     private final File file;
     private final Plugin plugin;
 
-    public ConfigurationManager(Plugin plugin, String name) {
+    public AbstractConfig(Plugin plugin, String name) {
         this.plugin = plugin;
         this.config = new YamlConfiguration();
         this.file = new File(plugin.getDataFolder(), name);
     }
 
-    public FileConfiguration getConfig() {
+    protected FileConfiguration getConfig() {
         return this.config;
     }
 
     private void create() {
         if (!file.exists()) {
             file.getParentFile().mkdirs();
-            plugin.saveResource("config.yml", false);
+            plugin.saveResource(file.getName(), false);
         }
     }
 
@@ -61,7 +61,7 @@ public class ConfigurationManager {
         try {
             config.save(file);
         } catch (IOException e) {
-            e.printStackTrace();
+            plugin.getLogger().warning("Can't save the plugin configuration: " + e.getMessage());
         }
     }
 }

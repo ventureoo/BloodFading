@@ -33,7 +33,6 @@ public class LegacyProtocolLibImpl implements PacketSender {
 
     public LegacyProtocolLibImpl(ProtocolManager protocolManager) {
         this.protocolManager = protocolManager;
-
     }
 
     @Override

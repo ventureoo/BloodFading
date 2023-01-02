@@ -18,14 +18,15 @@
  */
 package ru.ventureo.bloodfading.config;
 
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 import ru.ventureo.bloodfading.FadingType;
 
-public class PluginConfiguration extends ConfigurationManager {
+public class PluginConfiguration extends AbstractConfig {
     private final Plugin plugin;
 
-    public PluginConfiguration(Plugin plugin, String name) {
-        super(plugin, name);
+    public PluginConfiguration(Plugin plugin) {
+        super(plugin, "config.yml");
         this.plugin = plugin;
     }
 
@@ -33,8 +34,9 @@ public class PluginConfiguration extends ConfigurationManager {
         double coefficient = super.getConfig().getDouble("coefficient", 0.95);
         if (coefficient >= 1) {
             coefficient = 0.95;
-            plugin.getLogger().warning("You selected the wrong coefficient value, which is greater than or equal to one." +
-                    "The coefficient is set to the default value of 0.95.");
+            plugin.getLogger()
+                    .warning("You selected the wrong coefficient value, which is greater than or equal to one." +
+                            "The coefficient is set to the default value of 0.95.");
         }
         return coefficient;
     }
@@ -55,7 +57,27 @@ public class PluginConfiguration extends ConfigurationManager {
         return mode;
     }
 
+    private String getColoredString(String name, String def) {
+        return ChatColor.translateAlternateColorCodes('&', super.getConfig().getString(name, def));
+    }
+
     public int getInterval() {
         return super.getConfig().getInt("interval", 6);
     }
+
+    public String messageOnEnable() {
+        return getColoredString("messages.onEnable",
+                "&aYou turned on the first-person blood effect");
+    }
+
+    public String messageOnDisable() {
+        return getColoredString("messages.onDisable",
+                "&cYou turned off the first-person blood effect");
+    }
+
+    public String messageNoPermission() {
+        return getColoredString("messages.noPermission",
+                "&cYou don't have permission for this");
+    }
+
 }
