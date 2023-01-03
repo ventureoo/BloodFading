@@ -1,6 +1,8 @@
 # BloodFading
 
-Just a plugin for Minecraft (Bukkit), which creates a blood effect on the edges of the player's screen without mods when he takes damage. Supports all server versions from 1.8 to 1.18+. 
+Just a plugin for Minecraft (Bukkit), which creates a blood effect on
+the edges of the player's screen without mods when he takes damage.
+Supports all server versions from 1.8 to 1.18+.
 
 ## Demo
 
@@ -8,13 +10,24 @@ Just a plugin for Minecraft (Bukkit), which creates a blood effect on the edges 
 
 ## How it work?
 
-The plugin sends each damaged player a fake packet (via ProtocolLib) that he exceeded the warning distance of the barrier world in which he is. Fake packet distance is calculated relative to the player's distance from the center of the barrier, so no matter where the player is in the world the effect should be the same (However, in relative proximity to the barrier the blood effect may be slightly slower than in the center of the barrier). The plugin doesn't really change the size of the barrier or its center, it only sends the player information about the warning distance.
+The plugin sends each damaged player a fake packet (via ProtocolLib)
+that he exceeded the warning distance of the barrier world in which he
+is. Fake packet distance is calculated relative to the player's
+distance from the center of the barrier, so no matter where the player
+is in the world the effect should be the same (However, in relative
+proximity to the barrier the blood effect may be slightly slower than
+in the center of the barrier). The plugin doesn't really change the
+size of the barrier or its center, it only sends the player
+information about the warning distance.
 
-**ATTENTION: The effect on the edges of the screen does not appear on fast graphics settings. This is a limitation of the client of Minecraft, which can not be bypassed.**
+**ATTENTION: The effect on the edges of the screen does not appear on
+fast graphics settings. This is a limitation of the client of
+Minecraft, which can not be bypassed.**
 
 ## Configuration
 
-Starting with version 0.4 you can configure the behavior of the plugin. An example of the default configuration:
+Starting with version 0.4 you can configure the behavior of the
+plugin. An example of the default configuration:
 
 ```
 # Selects the fading mode. Accepts the following values:
@@ -38,11 +51,30 @@ interval: 6
 #
 # Default value: 0.95
 coefficient: 0.95
+
+# Messages to be output by the bloodfading command
+messages:
+  onEnable: "&cYou have enabled the first-person blood effect."
+  onDisable: "&cYou have disabled the first-person blood effect."
+  noPermission: "&aYou don't have permission for this"
 ```
 
-If you change the `interval`, I recommend changing it along with the `coefficent` to make the fading look smooth to the player.
+If you change the `interval`, I recommend changing it along with the
+`coefficent` to make the fading look smooth to the player.
+
+## Commands
+
+For players who want to stay on Fancy graphics settings, but do not
+want to see the effect on the edges of the screen there is a command
+``/bloodfading`` (alias ``/bf``) to disable the effect. The command
+only works for players who have the ``bloodfading.toggle`` permission.
+
+The names of players who wish to disable the effect will be stored in
+the ``data.yml`` in the plugin directory.
 
 ## Requirements
 
 - Java 8+
 - Requires the latest ProtocolLib to support the latest versions of Minecraft.
+
+.. vim:set textwidth=70:
