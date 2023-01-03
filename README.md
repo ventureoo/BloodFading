@@ -76,5 +76,3 @@ the ``data.yml`` in the plugin directory.
 
 - Java 8+
 - Requires the latest ProtocolLib to support the latest versions of Minecraft.
-
-.. vim:set textwidth=70:
