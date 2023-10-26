@@ -38,8 +38,10 @@ public class BloodFadingRunnable implements Runnable {
             Player player = entry.getKey();
 
             // Fixes a potential memory leak
-            if (!player.isOnline())
+            if (!player.isOnline()) {
                 plugin.getPlayers().remove(player);
+                continue;
+            }
 
             WorldBorder border = player.getWorld().getWorldBorder();
             int minDistance = (int) (border.getSize() / 2 - player.getLocation().distance(border.getCenter()));
